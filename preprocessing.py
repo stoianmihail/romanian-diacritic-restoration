@@ -78,7 +78,8 @@ char_vocab_size = len(allowed_characters)
 def flatten(txt):
     # remove diacritics
     if type(txt) == str:
-        txt = txt.decode('utf-8')
+        # txt = txt.decode('utf-8')
+        txt = txt
     return "".join([ translate_flat[c] if c in translate_flat else c for c in txt ])
 
 def pad_line(text, n=None):
@@ -97,7 +98,8 @@ def load_dictionary():
     kw_index = dict()
     index_kw = dict()
     kw_flat_dia = defaultdict(dict)
-    txt = open("dictionary.txt", "r").read().decode("utf-8")
+    # txt = open("dictionary.txt", "r").read().decode("utf-8")
+    txt = open("dictionary.txt", "r").read()
     kw_flat_dia = defaultdict(dict)
     for i, kw in enumerate(txt.split("\n")):
         kw_index[kw] = i
@@ -110,7 +112,10 @@ kw_index, index_kw, kw_flat_dia = load_dictionary()
 
 class BatchGenerator:
     
-    def __init__(self, batch=[], fname = "/mnt/data/diacritice/opencrawl.diacritics.filtered.txt", nr_valid=5000, limit=None):
+    def __init__(self, batch=[], 
+            # fname = "/mnt/data/diacritice/opencrawl.diacritics.filtered.txt", 
+            fname = "dataset/good_trainer.txt",
+            nr_valid=5000, limit=None):
         self.fname = fname
         self.nr_valid = nr_valid
         self.line_offs = []
@@ -164,7 +169,8 @@ class BatchGenerator:
                 ln_id = self.line_order[self.line_pos + i]
                 f.seek(self.line_offs[ln_id])
                 line = f.read(self.line_len[ln_id])
-                batch.append(line.decode("utf-8"))
+                # batch.append(line.decode("utf-8"))
+                batch.append(line)
         self.line_pos += batch_size
         return batch
 
@@ -175,7 +181,8 @@ class BatchGenerator:
             for ln_id in range(self.nr_valid):
                 f.seek(self.line_offs[ln_id])
                 line = f.read(self.line_len[ln_id])
-                batch.append(line.decode("utf-8"))
+                # batch.append(line.decode("utf-8"))
+                batch.append(line)
         return batch
 
     def featurize_text_to_words_tensor(self, text, max_hash=4294967000):
@@ -197,7 +204,8 @@ class BatchGenerator:
     def featurize_txt_to_chars(self, text):
         text = text.lower()
         if type(text) == str:
-            text = text.decode('utf-8')
+            text = text
+            # text = text.decode('utf-8')
         X = []
         Y = []
         for i in range(len(text)):

@@ -73,7 +73,7 @@ def DBG(**kwargs):
     EXIT()
 
 def LOG(msg):
-    print msg
+    print(msg)
 
 def DBG_TOOLS_INIT():
     signal.signal(signal.SIGINT, signal_handler_sigint)

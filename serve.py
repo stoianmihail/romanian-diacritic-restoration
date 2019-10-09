@@ -25,6 +25,7 @@ from keras import backend as K
 from keras.optimizers import Adam
 
 from preprocessing import *
+from train import *
 
 output_classes = 4
 max_word_hash = 1000000
@@ -75,8 +76,8 @@ def model_def():
         metrics=['accuracy'])
     return model
 
-model = model_def()
-model.load_weights("diacritice.lstm.keras.model")
+# model = model_def()
+# model.load_weights("diacritice.lstm.keras.model")
 
 def predict(model, text):
     # fix some alternative diacritics
@@ -116,7 +117,7 @@ def predict(model, text):
 
     # validate with dictionary
     text_pred = Y_pred_text
-    for m in re.finditer(ur"[a-zțţșşâăãîîâA-ZȚŢȘŞÂĂÃÎÎÂ0-9_-]+", Y_pred_text):
+    for m in re.finditer(u"[a-zțţșşâăãîîâA-ZȚŢȘŞÂĂÃÎÎÂ0-9_-]+", Y_pred_text):
         kw = Y_pred_text[m.start():m.end()].lower()
         kw0 = text0[m.start():m.end()].lower()
         kw_ = flatten(kw)
@@ -147,19 +148,36 @@ def predict(model, text):
 
 #DBG()
 
-app = Klein()
+#app = Klein()
 
-@app.route("/ajax")
-def generate_ajax(request):
-    txt = request.content.read().decode("utf-8")
-    print("GOT TXT=", txt, type(txt))
-    request.setHeader('Content-Type', 'text/html; charset=utf-8')
-    request.write(predict(model, txt).encode("utf-8"))	
+#@app.route("/ajax")
+#def generate_ajax(request):
+#    txt = request.content.read().decode("utf-8")
+#    print("GOT TXT=", txt, type(txt))
+#    request.setHeader('Content-Type', 'text/html; charset=utf-8')
+#    request.write(predict(model, txt).encode("utf-8"))	
 
-@app.route("/", branch=True)
-def generate_index(request):
-    return File("./app")
+# @app.route("/", branch=True)
+# def generate_index(request):
+    #return File("./app")
+
+def main():
+    mode = int(sys.argv[1])
+    if mode == 1:
+        model = train()
+    else:
+        file_name = sys.argv[2]
+        with open(file_name, "r") as content_file:
+            content = content_file.read()
+        model = model_def()
+        model.load_weights("diacritice.lstm.keras.model")
+
+        out_file = open(file_name + ".ok", "w")
+        out_file.write(predict(model, txt))
+        out_file.close()
+    pass
 
 if __name__ == '__main__':
-	print " * Web API started"
-	app.run(host='0.0.0.0', port=5080)
+    main()
+    # print(" * Web API started")
+    # app.run(host='0.0.0.0', port=5080)

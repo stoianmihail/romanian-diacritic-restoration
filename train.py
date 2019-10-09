@@ -87,8 +87,11 @@ def train():
             metrics=['accuracy'])
         return model
 
+    print("ici3")
     model = model_def()
+    print("ici7")
     model.load_weights("diacritice.lstm.keras.model")
+    print("ici9")
     K.set_value(model.optimizer.lr, 0.00001)
 
     #DBG()
@@ -99,6 +102,8 @@ def train():
         while True:
             x_chars, x_words, word_char_tensor, y_chars = bg.batch_generator(max_word=max_word_hash)
             yield [x_chars, x_words, word_char_tensor], y_chars
+
+    print("ici4")
 
     checkpoint = ModelCheckpoint(
         "diacritice.lstm.keras.model", 
@@ -124,4 +129,4 @@ def train():
               epochs=100,
               callbacks=[checkpoint, csv_logger, lr_tracker, learning_rate_reduction])
 
-DBG()
+# DBG()
