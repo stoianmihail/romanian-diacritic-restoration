@@ -159,7 +159,7 @@ class BatchGenerator:
         # shuffle lines, emit text batch
         if len(self.line_order) < self.line_pos + batch_size:
             print("Shuffling", len(self.line_offs), "lines from", self.fname)
-            self.line_order = range(len(self.line_offs))[self.nr_valid:]
+            self.line_order = list(range(len(self.line_offs))[self.nr_valid:])
             random.shuffle(self.line_order)
             self.line_pos = 0
         # read batch from input file

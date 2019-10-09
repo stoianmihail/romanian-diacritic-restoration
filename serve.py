@@ -125,7 +125,7 @@ def predict(model, text):
             if kw not in kw_flat_dia[kw_]:
                 kw_vars = kw_flat_dia[kw_]
                 if flatten(kw0) not in kw_vars:
-                    kw_repl = kw_vars.keys()[0]
+                    kw_repl = list(kw_vars)[0]
                     print("fixed=", text_pred[m.start():m.end()], kw_repl)
                     text_pred = text_pred.replace(text_pred[m.start():m.end()], kw_repl)
                 else:
@@ -141,7 +141,8 @@ def predict(model, text):
     for ch0, ch2 in zip(text0, Y_pred_text):
         ch = ch0
         if ch0.lower() != ch2.lower() and ch2 != " ":
-            ch = "<span class='mod'>"+ch2+"</span>"
+          ch = ch2  
+          #ch = "<span class='mod'>"+ch2+"</span>"
         rez.append(ch)
     rez_str = "".join(rez).strip()
     return rez_str
@@ -173,7 +174,7 @@ def main():
         model.load_weights("diacritice.lstm.keras.model")
 
         out_file = open(file_name + ".ok", "w")
-        out_file.write(predict(model, txt))
+        out_file.write(predict(model, content))
         out_file.close()
     pass
 

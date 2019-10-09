@@ -90,7 +90,7 @@ def train():
     print("ici3")
     model = model_def()
     print("ici7")
-    model.load_weights("diacritice.lstm.keras.model")
+    # model.load_weights("diacritice.lstm.keras.model")
     print("ici9")
     K.set_value(model.optimizer.lr, 0.00001)
 
@@ -109,7 +109,7 @@ def train():
         "diacritice.lstm.keras.model", 
         monitor='val_acc', 
         verbose=1, 
-        save_best_only=True, 
+        save_best_only=False, 
         mode='max')
 
     learning_rate_reduction = ReduceLROnPlateau(
